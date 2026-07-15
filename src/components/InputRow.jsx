@@ -1,0 +1,64 @@
+import { useState } from 'react'
+import { isReadingValid } from '../utils/billing'
+
+export default function InputRow({ biz, previous, currentValue, onChange, onRename, onRemove }) {
+  const [editingName, setEditingName] = useState(false)
+  const prev = previous[biz.id] ?? 0
+  const valid = isReadingValid(currentValue, prev)
+
+  function handleNameBlur(e) {
+    onRename(biz.id, e.target.value)
+    setEditingName(false)
+  }
+
+  return (
+    <div className={`input-row ${!valid ? 'invalid' : ''}`}>
+      <div className="biz-info">
+        <span className="biz-num">{biz.id}</span>
+
+        {editingName ? (
+          <input
+            className="name-input"
+            defaultValue={biz.name}
+            onBlur={handleNameBlur}
+            onKeyDown={e => e.key === 'Enter' && e.target.blur()}
+            autoFocus
+          />
+        ) : (
+          <button className="biz-name" onClick={() => setEditingName(true)} title="Click to rename">
+            {biz.name}
+            <span className="edit-hint">✎</span>
+          </button>
+        )}
+      </div>
+
+      <div className="reading-fields">
+        <div className="prev-reading">
+          <label>Previous</label>
+          <span className="mono prev-val">{prev.toFixed(2)}</span>
+        </div>
+
+        <div className="input-wrap">
+          <label htmlFor={`curr-${biz.id}`}>Current</label>
+          <input
+            id={`curr-${biz.id}`}
+            type="number"
+            className={`reading-input ${!valid ? 'input-error' : ''}`}
+            placeholder="0.00"
+            value={currentValue ?? ''}
+            onChange={e => onChange(biz.id, e.target.value)}
+            step="0.01"
+            min={prev}
+          />
+          {!valid && (
+            <span className="error-msg">Must be ≥ {prev.toFixed(2)}</span>
+          )}
+        </div>
+      </div>
+
+      <button className="remove-btn" onClick={() => onRemove(biz.id)} title="Remove business">
+        ✕
+      </button>
+    </div>
+  )
+}
