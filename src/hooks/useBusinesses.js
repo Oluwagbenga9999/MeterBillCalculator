@@ -70,7 +70,20 @@ export function useBusinesses() {
 
   async function saveCycle(currentReadings) {
     try {
-      await saveCycleReadings(currentReadings)
+      const updates = businesses.map(b => {
+        const parsed = parseFloat(currentReadings[b.id])
+        const nextReading = Number.isFinite(parsed) ? parsed : b.previous_reading
+
+        return {
+          id: b.id,
+          name: b.name,
+          previous_reading: nextReading,
+          updated_at: new Date().toISOString(),
+        }
+      })
+
+      await saveCycleReadings(updates)
+
       // Update local state so UI reflects new previous readings immediately
       setBusinesses(prev =>
         prev.map(b => ({

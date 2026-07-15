@@ -64,14 +64,16 @@ export async function removeBusiness(id) {
 /**
  * Save current readings as the new previous readings for all businesses.
  * Called at the end of each billing cycle.
- * @param {{ [id: number]: number }} currentReadings
+ * @param {{ [id: number]: number } | Array<{ id: number, name: string, previous_reading: number }> } currentReadings
  */
 export async function saveCycleReadings(currentReadings) {
-  const updates = Object.entries(currentReadings).map(([id, value]) => ({
-    id: parseInt(id),
-    previous_reading: parseFloat(value) || 0,
-    updated_at: new Date().toISOString(),
-  }))
+  const updates = Array.isArray(currentReadings)
+    ? currentReadings
+    : Object.entries(currentReadings).map(([id, value]) => ({
+        id: parseInt(id),
+        previous_reading: parseFloat(value) || 0,
+        updated_at: new Date().toISOString(),
+      }))
 
   const { error } = await supabase
     .from('businesses')
