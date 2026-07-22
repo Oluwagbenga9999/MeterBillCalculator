@@ -527,13 +527,42 @@
   .input-row { flex-direction: column; align-items: flex-start; gap: 12px; }
   .biz-info { flex: none; }
   .reading-fields { flex-wrap: wrap; gap: 16px; }
-  .table-head, .table-row {
-    grid-template-columns: 1fr 80px 90px;
+  .table-head { display: none; }
+  .table-row {
+    grid-template-columns: 1fr 1fr;
+    padding: 16px 18px;
+    gap: 12px;
   }
-  .table-head span:nth-child(2),
-  .table-row span:nth-child(2),
-  .table-head span:nth-child(3),
-  .table-row span:nth-child(3) { display: none; }
+  .table-row > .cell-biz {
+    grid-column: 1 / -1;
+  }
+  .table-row > .cell-units,
+  .table-row > .amount {
+    justify-self: end;
+  }
+  .table-row > span:nth-child(2),
+  .table-row > span:nth-child(3) {
+    width: 100%;
+  }
+  .table-row > span:nth-child(2)::before,
+  .table-row > span:nth-child(3)::before,
+  .table-row > .cell-units::before,
+  .table-row > .amount::before {
+    display: block;
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 4px;
+  }
+  .table-row > span:nth-child(2)::before { content: "Prev"; }
+  .table-row > span:nth-child(3)::before { content: "Curr"; }
+  .table-row > .cell-units::before { content: "Units"; }
+  .table-row > .amount::before { content: "Amount"; }
+  .table-row .cell-units {
+    align-items: flex-end;
+  }
+  .table-row .spark-bar { display: none; }
   .header-meta .date { display: none; }
   .totals-row { gap: 20px; }
   .totals-amount { font-size: 15px; }
