@@ -14,7 +14,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000) after filling `.env` with a real Supabase project.
 
-Schema migrations run during **`npm run build`** (including Vercel redeploys) and again on local Node server start. They use `POSTGRES_URL*` / `POSTGRES_PASSWORD`, are tracked in `public.schema_migrations`, and are idempotent.
+Schema migrations run during **`npm run build`** (including Vercel redeploys) and again on local Node server start. They use `POSTGRES_URL*` / `POSTGRES_PASSWORD`, are tracked in `public.schema_migrations`, and are idempotent. The registered `supabase-migration-*.sql` schema files run automatically in the order defined in `src/lib/dbMigrate.mjs`.
 
 On Vercel, the Supabase integration must provide `POSTGRES_URL` or `POSTGRES_URL_NON_POOLING` (or set `POSTGRES_PASSWORD`). A deploy without those vars fails the migrate step so an empty schema is not silent.
 
@@ -83,11 +83,11 @@ Legacy hash links (`#/cycles/...`) are redirected to the path form on load.
 - Per-tenant payment status: `awaiting` | `paid` | `unpaid` — conclude is blocked until none are awaiting
 - Tenant timeline: `/{slug}/businesses/{id}` with invoice at `/{slug}/businesses/{id}/invoices/{cycleId}`
 - Admin settings: `/{slug}/settings` (rate ₦/kWh, bank account, home banner)
-- Apply SQL: bootstrap is applied automatically on boot (`supabase-bootstrap.sql`); optional incremental files remain in the repo for reference
+- Apply SQL: the bootstrap and registered incremental migrations are applied automatically on boot (`supabase-bootstrap.sql` and `supabase-migration-*.sql`); troubleshooting and legacy SQL files remain manual
 
 ## Scripts
 
 - `npm run dev` — development server (port 3000); migrates on boot when DB creds exist
 - `npm run build` — production build **then** apply schema (used by Vercel)
 - `npm start` — serve production build; migrates on boot when DB creds exist
-- `npm run db:migrate` — apply schema now (`--force` to re-run bootstrap)
+- `npm run db:migrate` — apply all registered schema migrations now (`--force` to re-run every applied migration)

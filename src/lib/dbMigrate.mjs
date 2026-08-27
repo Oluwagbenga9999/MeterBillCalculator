@@ -39,6 +39,31 @@ export const MIGRATIONS = [
     file: 'supabase-migration-chain-previous-readings.sql',
     description: 'Repair published cycle previous_reading from nearest older cycle bill',
   },
+  {
+    id: '2026-08-27-auth-scope',
+    file: 'supabase-migration-auth.sql',
+    description: 'Auth ownership, tenant accounts, and row-level security scopes',
+  },
+  {
+    id: '2026-08-27-allocation',
+    file: 'supabase-migration-allocation.sql',
+    description: 'Billing cycle allocation method',
+  },
+  {
+    id: '2026-08-27-payments-settings',
+    file: 'supabase-migration-payments-settings.sql',
+    description: 'Payment tracking and plaza billing settings',
+  },
+  {
+    id: '2026-08-27-publish',
+    file: 'supabase-migration-publish.sql',
+    description: 'Cycle publishing and payment evidence metadata',
+  },
+  {
+    id: '2026-08-27-plazas',
+    file: 'supabase-migration-plazas.sql',
+    description: 'Plaza slugs and superadmin ownership policies',
+  },
 ]
 
 /** Advisory lock key so concurrent serverless starts don't race. */

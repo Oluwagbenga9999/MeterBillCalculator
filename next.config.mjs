@@ -8,6 +8,7 @@ const nextConfig = {
     outputFileTracingIncludes: {
       '/*': [
         './supabase-bootstrap.sql',
+        './supabase-migration-*.sql',
         './scripts/run-migrations.mjs',
         './src/lib/dbMigrate.mjs',
       ],
