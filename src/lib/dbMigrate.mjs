@@ -123,6 +123,12 @@ function formatPgError(err) {
  * Resolve DB URLs and which env source provided them (never logs secrets).
  */
 export function resolveDatabaseTargets(env = process.env) {
+  if (env.POSTGRES_MIGRATION_URL) {
+    return {
+      source: 'POSTGRES_MIGRATION_URL',
+      urls: [env.POSTGRES_MIGRATION_URL],
+    }
+  }
   if (env.POSTGRES_URL_NON_POOLING) {
     return {
       source: 'POSTGRES_URL_NON_POOLING',

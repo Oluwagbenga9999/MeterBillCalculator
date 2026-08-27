@@ -16,7 +16,7 @@ Open [http://localhost:3000](http://localhost:3000) after filling `.env` with a 
 
 Schema migrations run during **`npm run build`** (including Vercel redeploys) and again on local Node server start. They use `POSTGRES_URL*` / `POSTGRES_PASSWORD`, are tracked in `public.schema_migrations`, and are idempotent. The registered `supabase-migration-*.sql` schema files run automatically in the order defined in `src/lib/dbMigrate.mjs`.
 
-On Vercel, the Supabase integration must provide `POSTGRES_URL` or `POSTGRES_URL_NON_POOLING` (or set `POSTGRES_PASSWORD`). A deploy without those vars fails the migrate step so an empty schema is not silent.
+On Vercel, set `POSTGRES_MIGRATION_URL` to the Supabase **Session Pooler** connection string from the Connect dialog (port `5432`). This is recommended because Supabase's direct database host can resolve to IPv6, which may be unreachable from a Vercel build. The migration runner uses this variable first, then falls back to `POSTGRES_URL_NON_POOLING`, `POSTGRES_URL`, or `POSTGRES_PASSWORD`. A deploy without usable database credentials fails the migrate step so an empty schema is not silent.
 
 ```bash
 npm run db:migrate
@@ -38,6 +38,7 @@ Uses [Vercel ↔ Supabase Marketplace](https://supabase.com/docs/guides/integrat
 | `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Publishable / anon key (legacy: `NEXT_PUBLIC_SUPABASE_ANON_KEY`) |
 | `SUPABASE_SECRET_KEY` | Server-only secret key (legacy: `SUPABASE_SERVICE_ROLE_KEY`) |
+| `POSTGRES_MIGRATION_URL` | IPv4 Supabase Session Pooler URL for production migrations (recommended on Vercel) |
 | `POSTGRES_PASSWORD` / `POSTGRES_URL` | DB access for auto-migrate on boot + `npm run db:migrate` |
 | `SKIP_DB_MIGRATE` | Set to `1` to skip startup / CLI migrate |
 | `SUPERADMIN_EMAIL` | Static superadmin login email (app-specific) |
